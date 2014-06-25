@@ -33,20 +33,13 @@
 observe_rsc_update(#rsc_update{id=Id, props=AllProps}, {Changed, UpdateProps}, Context) ->
     case z_utils:is_empty(proplists:get_value(name, UpdateProps)) of
         true ->
-            case calculate_name(Id, UpdateProps ++ AllProps, Context) of
-                N when is_binary(N) ->
-                    {true, [{name, N} | proplists:delete(name, UpdateProps)]};
-                _ ->
-                    {Changed, UpdateProps}
-            end;
+            Title = z_trans:trans(proplists:get_value(title, UpdateProps ++ AllProps), Context),
+            Name = calculate_name(Id, 0, Title, Context),
+            {true, [{name, Name} | proplists:delete(name, UpdateProps)]};
         false ->
             {Changed, UpdateProps}
     end.                
 
-
-calculate_name(Id, Props, Context) ->
-    Title = z_trans:trans(proplists:get_value(title, Props), Context),
-    calculate_name(Id, 0, Title, Context).
 
 calculate_name(Id, Seq, Title, Context) ->
     Name = z_string:to_name(
