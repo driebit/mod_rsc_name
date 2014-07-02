@@ -31,7 +31,7 @@
 
 
 observe_rsc_update(#rsc_update{id=Id, props=AllProps}, {Changed, UpdateProps}, Context) ->
-    case z_utils:is_empty(proplists:get_value(name, UpdateProps)) of
+    case z_utils:is_empty(proplists:get_value(name, AllProps)) of
         true ->
             Title = z_trans:trans(proplists:get_value(title, UpdateProps ++ AllProps), Context),
             Name = calculate_name(Id, 0, Title, Context),
