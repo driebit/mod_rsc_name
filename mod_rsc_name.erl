@@ -34,9 +34,14 @@ observe_rsc_update(#rsc_update{id=Id, props=AllProps}, {Changed, UpdateProps}, C
     case z_utils:is_empty(proplists:get_value(name, UpdateProps)) andalso
          z_utils:is_empty(proplists:get_value(name, AllProps)) of
         true ->
-            Title = z_trans:trans(proplists:get_value(title, UpdateProps ++ AllProps), Context),
-            Name = calculate_name(Id, 0, Title, Context),
-            {true, [{name, Name} | proplists:delete(name, UpdateProps)]};
+            case proplists:get_value(title, UpdateProps ++ AllProps) of
+                undefined ->
+	            {Changed, UpdateProps};
+                Title ->
+		    z_trans:trans(Title, Context),
+            	    Name = calculate_name(Id, 0, Title, Context),
+                    {true, [{name, Name} | proplists:delete(name, UpdateProps)]}
+            end;
         false ->
             {Changed, UpdateProps}
     end.                
