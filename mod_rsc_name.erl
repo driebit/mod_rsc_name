@@ -38,8 +38,7 @@ observe_rsc_update(#rsc_update{id=Id, props=AllProps}, {Changed, UpdateProps}, C
                 undefined ->
 	            {Changed, UpdateProps};
                 Title ->
-		    z_trans:trans(Title, Context),
-            	    Name = calculate_name(Id, 0, Title, Context),
+            	    Name = calculate_name(Id, 0, z_trans:trans(Title, Context), Context),
                     {true, [{name, Name} | proplists:delete(name, UpdateProps)]}
             end;
         false ->
